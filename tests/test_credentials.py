@@ -14,7 +14,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest import mock
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_web.database import Database
 from comic_sol_web.generation.providers.base import ProviderError

@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 from typing import Any
 
-from web.tests.support import valid_environment
+from tests.support import engine_source, valid_environment
 
 
 WEB_ROOT = Path(__file__).resolve().parents[1]
@@ -759,7 +759,7 @@ class WebMcpContractTests(unittest.TestCase):
         self.assertEqual(1, result["publishedJobCount"])
 
     def test_local_mcp_surface_remains_exactly_seventeen_tools(self) -> None:
-        source = (WEB_ROOT.parent / "scripts" / "mcp_server.py").read_text(encoding="utf-8")
+        source = engine_source("mcp_server").read_text(encoding="utf-8")
         tree = ast.parse(source)
         names = {
             node.name

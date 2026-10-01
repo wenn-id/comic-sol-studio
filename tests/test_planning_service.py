@@ -17,7 +17,7 @@ from comic_sol_web.generation.providers.base import ProviderError
 from comic_sol_web.generation.types import ErrorCategory
 from comic_sol_web.planning.service import PlanningConflictError, PlanningService
 from comic_sol_web.planning.types import PlanResult
-from web.tests.test_projects import GatewayFixture, first_plan_payload, tree_snapshot
+from tests.test_projects import GatewayFixture, first_plan_payload, tree_snapshot
 
 
 class FakePlanner:

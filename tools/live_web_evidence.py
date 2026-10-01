@@ -8,14 +8,14 @@ real native portable release-asset smoke. It never calls a provider,
 reads credentials, or persists prompts.
 
 It is the publication gate for the evidence tracked in
-``docs/web/live-evidence.md`` (issue #321).
+``docs/live-evidence.md`` (issue #321).
 
 Usage
 -----
 
 ::
 
-    python -m scripts.live_web_evidence <bundle-root> \\
+    python -m tools.live_web_evidence <bundle-root> \\
         [--candidate <40-hex-sha>]
 
 ``<bundle-root>`` is the directory containing ``manifest.json`` and any
@@ -42,7 +42,7 @@ from PIL.Image import DecompressionBombError
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.input_limits import looks_like_secret
+from comic_sol_product.engine.input_limits import looks_like_secret
 
 SCHEMA_VERSION = "1.0"
 KIND = "web-live-evidence"

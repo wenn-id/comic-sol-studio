@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_web.generation.providers.agent import (
     AGENT_MODEL,

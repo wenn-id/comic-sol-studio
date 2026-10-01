@@ -14,7 +14,7 @@ surface contracts the Web distribution guarantees.
 > contract-tested but has **not** been run against a live provider in this work
 > package. The full `prompt → plan → review → image → panel QA → page QA → PDF`
 > loop is now reproducible offline with the `live` task set
-> (`web/tests/test_live_golden_path.py`); the same loop has **not** been
+> (`tests/test_live_golden_path.py`); the same loop has **not** been
 > exercised against a real OpenAI or Anthropic endpoint in this branch.
 
 ## Workflow at a glance

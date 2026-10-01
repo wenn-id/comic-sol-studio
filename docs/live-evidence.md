@@ -12,7 +12,7 @@ exact-candidate companion to the honest state recorded in
 
 **One external evidence bundle is retained: a static-only deployment.** The
 complete local workflow is separately **offline-qualified** by
-`web/tests/test_live_golden_path.py`; that deterministic test uses fake
+`tests/test_live_golden_path.py`; that deterministic test uses fake
 planning, image, and visual-review adapters, survives an application restart,
 and validates accepted PNG and exported PDF magic bytes. It is test evidence,
 not a live-evidence row and not a provider-quality claim.
@@ -41,11 +41,11 @@ As of this work package:
 | Cost | `USD 0.00` |
 | Authorization | issue #321 comment `5479494077`, recorded before execution |
 | Rows | `deploy-static-01` (`GET /`), `deploy-static-02` (`GET /webmcp.js`), `deploy-static-03` (mobile capture) — all `pass` |
-| Gate | `python -m scripts.live_web_evidence evidence/web-live/948d853 --candidate 948d853665c7f4a2368bea64a010e44230664224` |
+| Gate | `python -m tools.live_web_evidence evidence/web-live/948d853 --candidate 948d853665c7f4a2368bea64a010e44230664224` |
 
 **What the deployment does not include:** the FastAPI application, SQLite
 state at `COMIC_SOL_WEB_DATA_ROOT`, the `DurableGenerationQueue` poller, and
-every API route. Only the files under `web/comic_sol_web/static/` are served.
+every API route. Only the files under `comic_sol_web/static/` are served.
 The deployment therefore proves asset delivery and client-side WebMCP tool
 registration surface, not workflow execution. Rows 2–6 of the gap table
 remain `Not run`.
@@ -54,14 +54,14 @@ remain `Not run`.
 
 The canonical static-surface contract
 (`test_exact_static_surface_exists_and_uses_vanilla_modules`) defines the
-exact set of files that may live under `web/comic_sol_web/static/`. The
+exact set of files that may live under `comic_sol_web/static/`. The
 deploy-time Vercel config must therefore NOT be added to `static/`; it is
 reproduced at deploy time from this section only. The deploy that produced
-the retained evidence was driven by `vercel deploy ./web/comic_sol_web/static
+the retained evidence was driven by `vercel deploy ./comic_sol_web/static
 --prod --yes --archive=tgz --name comic-sol-studio --scope wenn-projects
 --token $VERCEL_TOKEN`, where `$VERCEL_TOKEN` is a single-use maintainer
 token supplied via shell env (never committed, never pasted in chat, and
-revoked once the deployment is verified). The `web/comic_sol_web/static`
+revoked once the deployment is verified). The `comic_sol_web/static`
 directory is used as-is; the canonical `index.html` / `app.js` / `webmcp.js`
 / etc. surface requires no transformation or build step. To disable
 Vercel-wide team SSO so the URL is anonymously reachable (so the evidence
@@ -168,7 +168,7 @@ Supported `kind` values: `deployment`, `agent-webmcp`, `comfyui`,
 
 ## Validation gate
 
-[`scripts/live_web_evidence.py`](../../scripts/live_web_evidence.py) is the
+[`tools/live_web_evidence.py`](../tools/live_web_evidence.py) is the
 fail-closed publication gate. It reads a local evidence bundle only. It
 never calls a provider, never reads credentials, and never pans a remote
 session. It validates:
@@ -207,7 +207,7 @@ A bundle is never committed to this repository: it binds an immutable
 candidate SHA, and a committed copy would go stale on the next commit and
 invite exactly the fabrication this framework exists to prevent. The
 tooling is instead proved by
-[`tests/test_live_web_evidence.py`](../../tests/test_live_web_evidence.py),
+[`tests/test_live_web_evidence.py`](../tests/test_live_web_evidence.py),
 which constructs bundles in a temporary directory and asserts both the
 accept path and every rejection path.
 
@@ -216,14 +216,14 @@ accept path and every rejection path.
 | # | Criterion | Where it is addressed |
 | --- | --- | --- |
 | 1 | Exact candidate + retention location recorded before execution | `manifest.json` `candidate` + `retention`, validated by the gate |
-| 2 | External deployment startup, health, restart persistence, backup/restore, rollback, secret rotation exercised & recorded | `deployment/deployment.json` rows + `docs/web/deployment.md` operator contract |
+| 2 | External deployment startup, health, restart persistence, backup/restore, rollback, secret rotation exercised & recorded | `deployment/deployment.json` rows + `docs/deployment.md` operator contract |
 | 3 | Active-agent WebMCP demonstrated through real capability surface | `agent-webmcp/agent-webmcp.json` |
 | 4 | Local ComfyUI demonstrated through agent-native handoff | `comfyui/comfyui.json` |
-| 5 | Every live-verified route has one cost-bounded exact-candidate smoke | `provider-smoke/*.json` + `docs/web/providers.md` |
+| 5 | Every live-verified route has one cost-bounded exact-candidate smoke | `provider-smoke/*.json` + `docs/providers.md` |
 | 6 | Screenshots/video/narration produced only from executed flows and sanitized | `media/*.json` |
-| 7 | Claimed native portable assets published and smoke-qualified | `release-asset-smoke/*.json` + `scripts/portable_release_smoke.py` |
+| 7 | Claimed native portable assets published and smoke-qualified | `release-asset-smoke/*.json` + comicsol's `scripts/portable_release_smoke.py` |
 | 8 | Current-head CI + release qualification pass for the immutable candidate | this PR's CI + the repo release gates |
-| 9 | Docs and matrices match retained evidence | `docs/web/providers.md` evidence links |
+| 9 | Docs and matrices match retained evidence | `docs/providers.md` evidence links |
 | 10 | No credential/token/path/story committed | the gate's secret + containment validation |
 
 ## Related documents

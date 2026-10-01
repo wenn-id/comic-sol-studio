@@ -21,9 +21,9 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from web.tests import support as _support  # noqa: F401
+from tests import support as _support  # noqa: F401
 
-from web.tests.fixtures.wp16_fixture import (
+from tests.fixtures.wp16_fixture import (
     WiredAppFixture,
     bounded_png,
     headers,

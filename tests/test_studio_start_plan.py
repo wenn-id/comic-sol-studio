@@ -14,7 +14,7 @@ from typing import ClassVar
 
 from fastapi.testclient import TestClient
 
-from web.tests.support import valid_environment
+from tests.support import valid_environment
 
 
 WEB_ROOT = Path(__file__).resolve().parents[1]

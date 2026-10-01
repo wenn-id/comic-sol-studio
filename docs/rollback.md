@@ -34,7 +34,7 @@ across rollback, so:
   SQLite `sessions` table and survive a rollback that retains the data
   volume (see the dedicated bullet below);
 - the **on-disk (SQLite-backed) generation queue is not "replayed"**.
-  `web/comic_sol_web/app.py::create_app` registers **no** `lifespan` or
+  `comic_sol_web/app.py::create_app` registers **no** `lifespan` or
   `shutdown` handler that drains, flushes, or replays interrupted work.
   Recovery is by design: `DurableGenerationQueue` stores jobs
   transactionally and `expired-running` leases are reclaimed on the

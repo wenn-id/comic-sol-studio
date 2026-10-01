@@ -24,13 +24,13 @@ from comic_sol_web.database import Database
 from comic_sol_web.generation.types import AuthMode, JobState
 from comic_sol_web.migrations import WORKFLOW_MIGRATIONS, apply_migrations
 from comic_sol_web.workflow import WorkflowConflictError, WorkflowService
-from scripts import comic_sol
-from scripts.core_primitives import PANEL_CHECK_IDS
-from scripts.project_io import ProjectTransaction
-from scripts.reference_strategy import plan_and_write_reference_plan
-from scripts.page_quality import SUBJECTIVE_PAGE_CHECK_IDS
-from tests.test_finalization import valid_page_reviewer_checks
-from web.tests.test_projects import (
+from comic_sol_product.engine import comic_sol
+from comic_sol_product.engine.core_primitives import PANEL_CHECK_IDS
+from comic_sol_product.engine.project_io import ProjectTransaction
+from comic_sol_product.engine.reference_strategy import plan_and_write_reference_plan
+from comic_sol_product.engine.page_quality import SUBJECTIVE_PAGE_CHECK_IDS
+from tests.engine_fixtures import valid_page_reviewer_checks
+from tests.test_projects import (
     GatewayFixture,
     tree_snapshot,
 )
@@ -735,8 +735,8 @@ class GenerationEnvelopeWorkflowTests(unittest.TestCase):
     def test_workflow_routes_register_without_constructing_storage(self):
         from comic_sol_web.app import create_app
         from comic_sol_web.config import WebConfig
-        from web.tests.support import valid_environment
-        from web.tests.test_app import registered_api_routes
+        from tests.support import valid_environment
+        from tests.test_app import registered_api_routes
 
         with tempfile.TemporaryDirectory() as temporary:
             data_root = Path(temporary) / "not-created"

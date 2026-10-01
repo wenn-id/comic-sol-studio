@@ -21,7 +21,7 @@ from typing import AsyncContextManager, AsyncIterator, Callable, Mapping, cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_product.cli import _load_engine_module
 from comic_sol_web.api.approvals import create_approvals_router

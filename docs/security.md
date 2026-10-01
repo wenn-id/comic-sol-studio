@@ -3,7 +3,7 @@
 This document lists the trust boundaries Comic Sol Studio enforces and the
 classes of information that never cross them. Every statement below is
 grounded in the merged Web code and the WP16 qualification suite; the
-documentation contract tests in `web/tests/test_web_docs.py` enforce these
+documentation contract tests in `tests/test_web_docs.py` enforce these
 claims.
 
 > **One sentence, no exceptions**
@@ -127,8 +127,8 @@ own lifetime. In the **merged Web build** only the capability-gated
 `agent` route is active; `hosted`, `session BYOK`, and `encrypted
 persisted BYOK` are **offline adapter contracts** whose adapters are
 not wired into `create_app`, so those routes are not served by the
-merged application (see [docs/web/surfaces.md](../surfaces.md) and
-[docs/web/index.md](index.md#generation-routes)). Within the provider
+merged application (see [Comic Sol surfaces](https://github.com/wenn-id/comicsol/blob/main/docs/surfaces.md) and
+[docs/index.md](index.md#generation-routes)). Within the provider
 contract, the four modes are:
 
 - **Agent** — credentials live in the agent session. Studio does not see
@@ -191,7 +191,7 @@ confirms an overwrite to that destination.
 
 **Generation inputs leave the deployment for the selected execution
 route.** The agent route serializes the user prompt into the
-provider-neutral handoff package (`web/comic_sol_web/generation/providers/agent.py`
+provider-neutral handoff package (`comic_sol_web/generation/providers/agent.py`
 includes `"prompt": request.prompt` and `"negative_prompt"` in the
 package). Hosted and BYOK adapters, when wired, send the prompt and
 the negative prompt in the external provider request body. The raw

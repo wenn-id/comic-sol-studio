@@ -16,7 +16,7 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_web.api.approvals import create_approvals_router
 from comic_sol_web.auth import SessionPrincipal, require_principal

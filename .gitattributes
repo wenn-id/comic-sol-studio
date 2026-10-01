@@ -1,0 +1,14 @@
+# Canonical artifacts are byte-stable across Windows and POSIX checkouts.
+*.json text eol=lf
+*.jsonl text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.txt text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.in text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+ENGINE_COMMIT text eol=lf

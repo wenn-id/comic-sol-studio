@@ -23,7 +23,7 @@ The columns are:
   merged `create_app` composition root. OpenAI is available only when the
   server environment declares `OPENAI_API_KEY`; the agent route is available
   only when the startup capability set exposes `text_to_image`.
-  `web/comic_sol_web/app.py::_generation_service` registers an
+  `comic_sol_web/app.py::_generation_service` registers an
   `AgentProvider(...)` and conditionally adds `OpenAIProvider(...)`; the
   credential stays inside `CredentialBroker`. `GenerationService._runtime_options()`
   excludes every catalog entry with no registered adapter, then emits the agent model only when
@@ -45,8 +45,8 @@ The columns are:
 > route available to a user of the merged build. Only OpenAI can be selected
 > when its declared server credential is present; all other paid rows remain
 > `Routable in merged build: No`. Two end-to-end offline-qualified routes exist:
-> the deterministic `FakeProvider` used by `web/tests/test_web_e2e.py` and
-> `web/tests/test_live_golden_path.py`, which is a test fixture rather than a
+> the deterministic `FakeProvider` used by `tests/test_web_e2e.py` and
+> `tests/test_live_golden_path.py`, which is a test fixture rather than a
 > shippable provider. `test_live_golden_path.py` drives the entire
 > `prompt → plan → human review → image → panel QA → page QA → composition →
 > PDF` loop with fake planning, fake image, and fake visual-review adapters plus
@@ -116,7 +116,7 @@ no local ComfyUI evidence was recorded.
 ## Model identifiers
 
 The published model identifiers below match the merged generation catalog
-exactly (`web/comic_sol_web/generation/catalog.py`):
+exactly (`comic_sol_web/generation/catalog.py`):
 
 - **OpenAI** — `gpt-image-2` by default, configurable through
   `COMIC_SOL_WEB_OPENAI_IMAGE_MODEL`

@@ -22,7 +22,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from PIL import Image
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_web.api.projects import create_projects_router
 from comic_sol_web.auth import SessionPrincipal, require_principal
@@ -41,14 +41,14 @@ from comic_sol_web.engine_gateway import (
 from comic_sol_web.generation.types import GenerationRequest
 from comic_sol_web.migrations import APPLICATION_MIGRATIONS, Migration, apply_migrations
 from comic_sol_web.projects import ProjectService
-from scripts import comic_sol
-from scripts.character_identity import derive_identity_pack
-from scripts.core_primitives import canonical_artifact_bytes, canonical_json_bytes
-from scripts.handoff import HandoffResultError
-from scripts.handoff_archive import HandoffArchiveError, export_handoff_archive
-from scripts.schema import CURRENT_PROJECT_SCHEMA_VERSION, read_project_manifest
-from scripts.validate_project import validate_manifest, validate_project
-from tests.test_validation import valid_characters, valid_story, valid_storyboard
+from comic_sol_product.engine import comic_sol
+from comic_sol_product.engine.character_identity import derive_identity_pack
+from comic_sol_product.engine.core_primitives import canonical_artifact_bytes, canonical_json_bytes
+from comic_sol_product.engine.handoff import HandoffResultError
+from comic_sol_product.engine.handoff_archive import HandoffArchiveError, export_handoff_archive
+from comic_sol_product.engine.schema import CURRENT_PROJECT_SCHEMA_VERSION, read_project_manifest
+from comic_sol_product.engine.validate_project import validate_manifest, validate_project
+from tests.engine_fixtures import planner_project, valid_characters, valid_story, valid_storyboard
 
 
 CAPABILITIES_USED = {
@@ -102,9 +102,7 @@ def first_plan_payload() -> dict[str, str]:
 
 
 def portable_archive(test_case: unittest.TestCase) -> Path:
-    from tests.test_handoff_lifecycle import HandoffLifecycleGoldenTests
-
-    _root, project = HandoffLifecycleGoldenTests._planner_project(test_case)
+    _root, project = planner_project(test_case)
     comic_sol.prepare_handoff(project)
     archive_root = Path(tempfile.mkdtemp())
     test_case.addCleanup(shutil.rmtree, archive_root, True)

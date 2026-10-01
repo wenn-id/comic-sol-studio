@@ -20,7 +20,7 @@ from uuid import uuid4
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from web.tests import support as _support  # noqa: F401
+from tests import support as _support  # noqa: F401
 
 from comic_sol_web.api.approvals import create_approvals_router
 from comic_sol_web.api.assets import create_assets_router
@@ -40,8 +40,8 @@ from comic_sol_web.generation.types import AuthMode
 from comic_sol_web.migrations import apply_migrations
 from comic_sol_web.projects import ProjectService
 
-from scripts import comic_sol
-from scripts.handoff_archive import export_handoff_archive
+from comic_sol_product.engine import comic_sol
+from comic_sol_product.engine.handoff_archive import export_handoff_archive
 
 
 class NullCredentialResolver:
@@ -201,7 +201,7 @@ class WiredAppFixture(unittest.TestCase):
 
     def planner_project(self) -> Path:
         """Build a canonical planner project without depending on a private API."""
-        from tests.test_handoff_lifecycle import HandoffLifecycleGoldenTests
+        from tests.engine_fixtures import planner_project
 
-        _root, project = HandoffLifecycleGoldenTests._planner_project(self)
+        _root, project = planner_project(self)
         return project

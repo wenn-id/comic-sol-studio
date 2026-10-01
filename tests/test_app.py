@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from web.tests.support import (
+from tests.support import (
     ENCRYPTION_SECRET,
     SESSION_SECRET,
     make_symlink,
@@ -603,7 +603,7 @@ class WebApplicationTests(unittest.TestCase):
                 app.state.projects.gateway.__class__,
             )
             self.assertEqual(
-                "scripts.comic_sol",
+                "comic_sol_product.engine.comic_sol",
                 engine_gateway.comic_sol.__name__,
             )
 
@@ -677,33 +677,39 @@ print(engine.__name__)
             completed.stdout.strip(),
         )
 
-    def test_web_ci_builds_and_installs_local_root_before_the_web_wheel(self):
-        workflow = (
-            Path(__file__).resolve().parents[2] / ".github/workflows/web-tests.yml"
-        ).read_text(encoding="utf-8")
+    def test_web_ci_builds_and_installs_pinned_engine_before_the_web_wheel(self):
+        repository = Path(__file__).resolve().parents[1]
+        workflow = (repository / ".github/workflows/tests.yml").read_text(encoding="utf-8")
+        pinned = (repository / "ENGINE_COMMIT").read_text(encoding="utf-8").strip()
+        self.assertRegex(pinned, r"^[0-9a-f]{40}$")
         required = (
+            "ENGINE_COMMIT",
+            "repository: wenn-id/comicsol",
+            "ref: ${{ steps.engine.outputs.sha }}",
             "requirements/locks/web-${{ matrix.lock }}-x86_64.txt",
-            "requirements/locks/base-${{ matrix.lock }}-x86_64.txt",
+            ".engine/requirements/locks/base-${{ matrix.lock }}-x86_64.txt",
             "python -m build --no-isolation --wheel -o dist",
             "python -m pip install --no-deps --force-reinstall dist/comic_sol-*.whl",
             "python -m build --no-isolation --wheel -o dist",
             "python -m pip install --no-deps --force-reinstall dist/comic_sol_web-*.whl",
-            'python -m unittest discover -s web/tests -p "test_*.py" -v',
-            "python -m unittest web.tests.test_projects -v",
+            "rm -rf .engine",
+            'python -m unittest discover -s tests -p "test_*.py" -v',
+            "python -m unittest tests.test_projects -v",
         )
         cursor = 0
         for expected in required:
             with self.subTest(expected=expected):
                 cursor = workflow.index(expected, cursor) + len(expected)
 
-    def test_web_distribution_stays_separate_from_root_distribution(self):
+    def test_web_distribution_depends_on_the_engine_only_as_a_wheel(self):
         web = Path(__file__).resolve().parents[1]
-        root = web.parent
-        web_project = (web / "pyproject.toml").read_text(encoding="utf-8")
-        root_project = (root / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('name = "comic-sol-web"', web_project)
-        self.assertNotIn("FastAPI", root_project)
-        self.assertNotIn("fastapi", root_project.lower())
+        web_project = tomllib.loads((web / "pyproject.toml").read_text(encoding="utf-8"))
+        self.assertEqual("comic-sol-web", web_project["project"]["name"])
+        self.assertEqual(
+            ["comic_sol_web*"], web_project["tool"]["setuptools"]["packages"]["find"]["include"]
+        )
+        self.assertFalse((web / "comic_sol_product").exists())
+        self.assertFalse((web / "scripts").exists())
 
 
 if __name__ == "__main__":

@@ -42,13 +42,13 @@ from comic_sol_web.security import (
     redact_text,
 )
 
-from web.tests.fixtures.wp16_fixture import (
+from tests.fixtures.wp16_fixture import (
     WiredAppFixture,
     bounded_png,
     headers,
     pump,
 )
-from web.tests.fixtures.wp16_fixture import (  # re-exported wiring symbols
+from tests.fixtures.wp16_fixture import (  # re-exported wiring symbols
     NullCredentialResolver,
 )
 
@@ -145,9 +145,9 @@ class TestHealthzIsolation(WiredAppFixture):
     """The /healthz endpoint must be deterministic and lean."""
 
     def test_healthz_ok(self) -> None:
-        from web.tests.support import valid_environment
-        from web.comic_sol_web.app import create_app
-        from web.comic_sol_web.config import WebConfig
+        from tests.support import valid_environment
+        from comic_sol_web.app import create_app
+        from comic_sol_web.config import WebConfig
 
         env = valid_environment(self.data_root)
         app = create_app(WebConfig.from_env(env))
@@ -159,9 +159,9 @@ class TestHealthzIsolation(WiredAppFixture):
         assert body == {"status": "ok"}
 
     def test_healthz_no_secrets(self) -> None:
-        from web.tests.support import valid_environment
-        from web.comic_sol_web.app import create_app
-        from web.comic_sol_web.config import WebConfig
+        from tests.support import valid_environment
+        from comic_sol_web.app import create_app
+        from comic_sol_web.config import WebConfig
 
         env = valid_environment(self.data_root)
         app = create_app(WebConfig.from_env(env))
@@ -905,7 +905,7 @@ class TestRasterValidation(WiredAppFixture):
 class TestSsrfPolicy(WiredAppFixture):
     """SSRF: loopback-only cleartext, redirect rejection, allowlist gate.
 
-    Contract (web/comic_sol_web/generation/providers/http.py):
+    Contract (comic_sol_web/generation/providers/http.py):
     - `_canonical_origin` rejects any cleartext (http) origin that is not
       loopback, any scheme outside http/https, and any embedded credentials.
     - HTTPS origins (including private/link-local/metadata IPs) pass origin

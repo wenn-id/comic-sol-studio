@@ -27,12 +27,13 @@ from pathlib import Path
 from typing import ClassVar
 
 from comic_sol_web.generation.catalog import CATALOG
+from tests.support import engine_source
 
 
-ROOT = Path(__file__).resolve().parents[2]
-WEB_DOCS = ROOT / "docs" / "web"
-APP_SOURCE = ROOT / "web" / "comic_sol_web" / "app.py"
-GENERATION_SERVICE_SOURCE = ROOT / "web" / "comic_sol_web" / "generation" / "service.py"
+ROOT = Path(__file__).resolve().parents[1]
+WEB_DOCS = ROOT / "docs"
+APP_SOURCE = ROOT / "comic_sol_web" / "app.py"
+GENERATION_SERVICE_SOURCE = ROOT / "comic_sol_web" / "generation" / "service.py"
 
 # The exact WebMCP surface #266 registered and WP16 qualified.
 WEBMCP_READ_TOOLS = frozenset(
@@ -146,7 +147,7 @@ def section(document: str, heading: str) -> str:
 
 
 class WebIndexContractTests(unittest.TestCase):
-    """`docs/web/index.md` documents the full workflow without billing confusion."""
+    """`docs/index.md` documents the full workflow without billing confusion."""
 
     document: ClassVar[str]
     normalized: ClassVar[str]
@@ -154,7 +155,7 @@ class WebIndexContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """setUpClass."""
-        cls.document = read("docs/web/index.md")
+        cls.document = read("docs/index.md")
         cls.normalized = collapsed(cls.document)
 
     def test_every_workflow_step_is_documented_in_order(self) -> None:
@@ -293,7 +294,7 @@ class WebIndexContractTests(unittest.TestCase):
 
 
 class WebProvidersContractTests(unittest.TestCase):
-    """`docs/web/providers.md` publishes an honest, catalog-backed matrix."""
+    """`docs/providers.md` publishes an honest, catalog-backed matrix."""
 
     document: ClassVar[str]
     normalized: ClassVar[str]
@@ -302,7 +303,7 @@ class WebProvidersContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """setUpClass."""
-        cls.document = read("docs/web/providers.md")
+        cls.document = read("docs/providers.md")
         cls.normalized = collapsed(cls.document)
         cls.matrix = section(cls.document, "Provider verification matrix")
 
@@ -394,11 +395,11 @@ class WebProvidersContractTests(unittest.TestCase):
             "Conditional",
             rows.get("Active-agent image generation", {}).get("routable in merged build", ""),
         )
-        agent_doc = collapsed(read("docs/web/providers.md"))
+        agent_doc = collapsed(read("docs/providers.md"))
         self.assertIn("text_to_image", agent_doc)
         self.assertIn(
             "capabilities",
-            collapsed(read("docs/web/index.md")).lower(),
+            collapsed(read("docs/index.md")).lower(),
         )
 
     def test_agent_route_requires_text_to_image_capability_at_runtime(self) -> None:
@@ -424,10 +425,10 @@ class WebProvidersContractTests(unittest.TestCase):
         self.assertIn("text_to_image", _AGENT_HANDOFF_CAPABILITIES)
         self.assertEqual(AGENT_MODEL, "active-agent-image")
         # The published index must state the capability condition.
-        index_doc = collapsed(read("docs/web/index.md"))
+        index_doc = collapsed(read("docs/index.md"))
         self.assertIn("text_to_image", index_doc)
         self.assertIn("capabilities", index_doc.lower())
-        providers_doc = collapsed(read("docs/web/providers.md"))
+        providers_doc = collapsed(read("docs/providers.md"))
         self.assertIn("text_to_image", providers_doc)
 
     def test_no_route_claims_live_smoke_without_an_evidence_link(self) -> None:
@@ -549,7 +550,7 @@ class WebProvidersContractTests(unittest.TestCase):
 
 
 class WebSecurityContractTests(unittest.TestCase):
-    """`docs/web/security.md` documents credential modes, trust, recovery."""
+    """`docs/security.md` documents credential modes, trust, recovery."""
 
     document: ClassVar[str]
     normalized: ClassVar[str]
@@ -557,7 +558,7 @@ class WebSecurityContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """setUpClass."""
-        cls.document = read("docs/web/security.md")
+        cls.document = read("docs/security.md")
         cls.normalized = collapsed(cls.document)
 
     def test_credentials_never_reach_any_forbidden_destination(self) -> None:
@@ -657,7 +658,7 @@ class WebSecurityContractTests(unittest.TestCase):
 
 
 class WebDeploymentContractTests(unittest.TestCase):
-    """`docs/web/deployment.md` is operable and invents no endpoint or URL."""
+    """`docs/deployment.md` is operable and invents no endpoint or URL."""
 
     document: ClassVar[str]
     normalized: ClassVar[str]
@@ -665,7 +666,7 @@ class WebDeploymentContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """setUpClass."""
-        cls.document = read("docs/web/deployment.md")
+        cls.document = read("docs/deployment.md")
         cls.normalized = collapsed(cls.document)
 
     def test_single_process_runtime_and_its_limits_are_documented(self) -> None:
@@ -766,7 +767,7 @@ class WebDeploymentContractTests(unittest.TestCase):
 
 
 class WebRollbackContractTests(unittest.TestCase):
-    """`docs/web/rollback.md` documents recovery without fabricating evidence."""
+    """`docs/rollback.md` documents recovery without fabricating evidence."""
 
     document: ClassVar[str]
     normalized: ClassVar[str]
@@ -774,7 +775,7 @@ class WebRollbackContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """setUpClass."""
-        cls.document = read("docs/web/rollback.md")
+        cls.document = read("docs/rollback.md")
         cls.normalized = collapsed(cls.document)
 
     def test_every_recovery_boundary_has_a_section(self) -> None:
@@ -827,10 +828,10 @@ class WebMcpSurfaceContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """setUpClass."""
-        cls.webmcp_source = (ROOT / "web" / "comic_sol_web" / "static" / "webmcp.js").read_text(
+        cls.webmcp_source = (ROOT / "comic_sol_web" / "static" / "webmcp.js").read_text(
             encoding="utf-8"
         )
-        cls.tool_list = read("docs/web/webmcp-tools.md")
+        cls.tool_list = read("docs/webmcp-tools.md")
 
     def test_the_merged_module_registers_exactly_five_read_and_nine_write_tools(self) -> None:
         """check the merged module registers exactly five read and nine write tools."""
@@ -868,11 +869,11 @@ class WebMcpSurfaceContractTests(unittest.TestCase):
 
     def test_local_mcp_remains_exactly_seventeen_tools(self) -> None:
         """check local mcp remains exactly seventeen tools."""
-        source = (ROOT / "scripts" / "mcp_server.py").read_text(encoding="utf-8")
+        source = engine_source("mcp_server").read_text(encoding="utf-8")
         tools = re.findall(r"@mcp\.tool\(\)\n(?:@[^\n]+\n)*def (comic_[a-z_]+)\(", source)
         self.assertEqual(17, len(tools), sorted(tools))
         self.assertEqual(17, len(set(tools)))
-        self.assertIn("exactly 17", collapsed(read("docs/web/index.md")))
+        self.assertIn("exactly 17", collapsed(read("docs/index.md")))
 
 
 class WebDocumentationLinkTests(unittest.TestCase):
@@ -976,7 +977,7 @@ class RuntimeBoundaryContractTests(unittest.TestCase):
     """Validate the deployment and provider docs against the production
     composition root, not just documentation prose.
 
-    These assertions read `web/comic_sol_web/app.py` and the
+    These assertions read `comic_sol_web/app.py` and the
     `generation/service.py` catalog filtering. They fail if a paid provider
     adapter is wired into the merged `create_app`, or if a drain/flush
     lifecycle hook is added, without the documentation being updated to
@@ -1036,7 +1037,7 @@ class RuntimeBoundaryContractTests(unittest.TestCase):
     def test_create_app_registers_only_the_local_bootstrap_auth_router(self) -> None:
         """Fail if an OAuth router is wired into create_app.
 
-        `docs/web/security.md` and `docs/web/index.md` both state that the
+        `docs/security.md` and `docs/index.md` both state that the
         merged build ships no OAuth sign-in route. This asserts the scope
         boundary against the composition root: every `include_router(...)`
         call inside `create_app` must name a factory from the allowed
@@ -1088,7 +1089,7 @@ class RuntimeBoundaryContractTests(unittest.TestCase):
                         forbidden,
                         name.lower(),
                         f"{name} looks like an OAuth router; "
-                        "docs/web/security.md states none is registered",
+                        "docs/security.md states none is registered",
                     )
 
     def test_no_lifespan_or_drain_hook_in_create_app(self) -> None:

@@ -22,7 +22,7 @@ from comic_sol_web.database import Database
 from comic_sol_web.generation.service import GenerationConflictError, GenerationUnavailableError
 from comic_sol_web.generation.types import JobState
 from comic_sol_web.migrations import apply_migrations
-from web.tests.support import make_symlink
+from tests.support import make_symlink
 
 
 def png_bytes(width: int = 2, height: int = 2, *, trailing_decompressed: int = 0) -> bytes:

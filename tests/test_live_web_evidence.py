@@ -1,8 +1,8 @@
 """Repository contract tests for the Web/Studio live evidence framework (issue #321).
 
 This module is the offline, candidate-binding contract for the
-``scripts/live_web_evidence.py`` gate. It is the runtime companion to
-``docs/web/live-evidence.md``: the docs are prose, these tests are the
+``tools/live_web_evidence.py`` gate. It is the runtime companion to
+``docs/live-evidence.md``: the docs are prose, these tests are the
 behaviour the prose promises, exercised against an isolated evidence
 bundle in a temporary directory.
 
@@ -25,7 +25,7 @@ from typing import Mapping
 
 from PIL import Image
 
-from scripts.live_web_evidence import (
+from tools.live_web_evidence import (
     ALLOWED_ENVIRONMENTS,
     ALLOWED_RESULTS,
     EvidenceError,
@@ -121,7 +121,7 @@ class EmptyBundleRoundTripTests(_Base):
         self.assertIn("No rows retained", rendered)
 
     def test_full_cli_writes_summary_files(self) -> None:
-        from scripts.live_web_evidence import main
+        from tools.live_web_evidence import main
 
         _write_bundle(self.root, _manifest())
         exit_code = main([str(self.root), "--candidate", self.candidate()])
@@ -386,13 +386,13 @@ class RowEnumCoverageTests(_Base):
 
 class ResolveCandidateTests(_Base):
     def test_resolve_candidate_rejects_bad_sha(self) -> None:
-        from scripts.live_web_evidence import _resolve_candidate
+        from tools.live_web_evidence import _resolve_candidate
 
         with self.assertRaises(EvidenceError):
             _resolve_candidate(self.root, "not-a-sha")
 
     def test_resolve_candidate_falls_back_to_bundle_head(self) -> None:
-        from scripts.live_web_evidence import _resolve_candidate
+        from tools.live_web_evidence import _resolve_candidate
 
         git_dir = self.root / ".git"
         git_dir.mkdir()
@@ -407,10 +407,10 @@ class FrameworkDocumentTests(unittest.TestCase):
     """Pin the framework doc to the live, immutable acceptance-criteria count from #321."""
 
     ROOT = Path(__file__).resolve().parents[1]
-    DOC = ROOT / "docs" / "web" / "live-evidence.md"
+    DOC = ROOT / "docs" / "live-evidence.md"
 
     def test_docs_present(self) -> None:
-        self.assertTrue(self.DOC.is_file(), "docs/web/live-evidence.md is missing")
+        self.assertTrue(self.DOC.is_file(), "docs/live-evidence.md is missing")
 
     def test_framework_documents_all_eight_acceptance_criteria(self) -> None:
         text = self.DOC.read_text(encoding="utf-8")
@@ -441,7 +441,7 @@ class FrameworkDocumentTests(unittest.TestCase):
         candidates = re.findall(r"\b[0-9a-f]{40}\b", status)
         self.assertTrue(candidates, "retained status must name a 40-hex candidate SHA")
         self.assertIn("evidence/web-live/", status)
-        self.assertIn("scripts.live_web_evidence", status)
+        self.assertIn("tools.live_web_evidence", status)
         for sha in candidates:
             with self.subTest(sha=sha):
                 self.assertIn(sha[:7], status)

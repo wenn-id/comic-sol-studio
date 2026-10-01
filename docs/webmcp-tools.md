@@ -1,8 +1,8 @@
 # WebMCP tool surface
 
-The core WebMCP client (`web/comic_sol_web/static/webmcp.js`) registers the
+The core WebMCP client (`comic_sol_web/static/webmcp.js`) registers the
 exact tool list below. This list is generated from the merged module and is
-verified by `web/tests/test_web_docs.py::WebMcpSurfaceContractTests`.
+verified by `tests/test_web_docs.py::WebMcpSurfaceContractTests`.
 
 The Studio page also registers a small creator-facing facade from `app.js`.
 That additive facade is intentionally **not** part of the exact core list below:
@@ -48,7 +48,7 @@ request. The existing 14-tool production contract remains unchanged.
 ## Creator facade
 
 The page-level creator facade is additive to the core list above. It is
-contract-tested separately by `web/tests/test_webmcp_creator_flow.py` and
+contract-tested separately by `tests/test_webmcp_creator_flow.py` and
 reuses the authenticated Studio project API when available. On the hosted
 static Studio, those creator operations can fall back to an ephemeral,
 in-memory project so create/read/revise can be demonstrated without claiming a
@@ -58,5 +58,5 @@ storage and disappears on refresh.
 ## Local MCP remains exactly 17 tools
 
 The local MCP surface (the `comic-sol` MCP server registered in
-`scripts/mcp_server.py`) remains exactly 17 `comic_*` tools and is independent
+comicsol's `scripts/mcp_server.py`) remains exactly 17 `comic_*` tools and is independent
 of the browser WebMCP surface.

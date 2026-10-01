@@ -41,7 +41,7 @@ generation queue.
 
 **Studio does embed a database.** `EngineGateway.open` creates
 `application.sqlite3` under the data root and applies migrations
-(`web/comic_sol_web/engine_gateway.py`), lazily, on the first authenticated
+(`comic_sol_web/engine_gateway.py`), lazily, on the first authenticated
 project request. `/healthz` deliberately does not touch it.
 
 State therefore splits into two categories, and the distinction governs
@@ -88,7 +88,7 @@ process is running.
 
 ## Environment secrets
 
-The configuration module (`web/comic_sol_web/config.py`) defines exactly six
+The configuration module (`comic_sol_web/config.py`) defines exactly six
 environment variables. Three are **required** and fail process start if
 missing or too short; three are **optional** reference declarations used only
 when hosted or persisted-BYOK credential routing is configured. All are listed
@@ -233,7 +233,7 @@ only inspects `/healthz` can therefore leave work stalled until the
 next `queue`/`retry`/`approve` write triggers a consumer.
 
 **There is no coordinated graceful-shutdown drain.** The merged
-`web/comic_sol_web/app.py::create_app` registers no lifespan or shutdown
+`comic_sol_web/app.py::create_app` registers no lifespan or shutdown
 handler that drains in-flight generation or flushes a queue, so an operator
 cannot rely on those steps during deployment or rollback. Recovery is
 instead provided by design:

@@ -4,7 +4,7 @@
 # python -m piptools compile --allow-unsafe --generate-hashes --output-file=requirements/locks/web-macos-x86_64.txt --strip-extras requirements/web.in
 # python -m piptools compile --allow-unsafe --generate-hashes --output-file=requirements/locks/web-windows-x86_64.txt --strip-extras requirements/web.in
 #
-# The isolated `comic-sol-web` distribution (see web/pyproject.toml). Direct
+# The isolated `comic-sol-web` distribution (see pyproject.toml). Direct
 # pins are restricted to the Web architecture named in umbrella issue #251:
 # FastAPI, Uvicorn, HTTPX, Authlib, cryptography, and python-multipart, plus
 # the Web distribution's own required build and quality tools so its CI can

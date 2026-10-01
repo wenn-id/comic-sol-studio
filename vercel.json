@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "buildCommand": "",
-  "outputDirectory": "web/comic_sol_web/static",
+  "outputDirectory": "comic_sol_web/static",
   "installCommand": "",
   "cleanUrls": true,
   "trailingSlash": false,

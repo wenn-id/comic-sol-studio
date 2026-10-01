@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Pinned engine checkout used by CI and local setup
+.engine/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets and private signing material
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Coverage reports
+.coverage
+coverage.json
+coverage.xml
+coverage-html/
+.mypy_cache/
+.ruff_cache/
+
+# Vercel CLI link metadata
+.vercel

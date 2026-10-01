@@ -9,7 +9,7 @@ from pathlib import Path
 
 import httpx
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_web.generation.providers.base import ProviderError
 from comic_sol_web.generation.providers.xai import XAIProvider, _MODEL

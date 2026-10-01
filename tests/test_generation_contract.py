@@ -11,7 +11,7 @@ from typing import AsyncIterator, Mapping, Sequence, get_type_hints
 
 import httpx
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_web.generation.catalog import CATALOG
 from comic_sol_web.generation.providers.base import ProviderError, ProviderRegistry

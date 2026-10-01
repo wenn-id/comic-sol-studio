@@ -12,7 +12,7 @@ from typing import Mapping
 import httpx
 from PIL import Image
 
-from web.tests import support as _support  # noqa: F401  # Checkout import path setup.
+from tests import support as _support  # noqa: F401  # Checkout import path setup.
 
 from comic_sol_web.generation.providers.base import ProviderError
 from comic_sol_web.generation.providers.http import read_reference_raster

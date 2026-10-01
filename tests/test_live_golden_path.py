@@ -25,9 +25,9 @@ from comic_sol_web.planning.service import PlanningService
 from comic_sol_web.planning.types import PlanResult, VisualReviewResult
 from comic_sol_web.projects import ProjectService
 from comic_sol_web.workflow import WorkflowService
-from tests.test_finalization import valid_page_reviewer_checks
-from web.tests.fixtures.wp16_fixture import FakeAuth, bounded_png
-from web.tests.test_projects import first_plan_payload
+from tests.engine_fixtures import valid_page_reviewer_checks
+from tests.fixtures.wp16_fixture import FakeAuth, bounded_png
+from tests.test_projects import first_plan_payload
 
 
 class FakePlanningAndVisualReviewProvider:

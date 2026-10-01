@@ -1,7 +1,7 @@
 """Shared helpers for the isolated comic-sol-web test suite.
 
-Discovery runs as `python -m unittest discover -s web/tests -p "test_app.py"`,
-which puts `web/tests` on `sys.path`. The Web distribution is normally
+Discovery runs as `python -m unittest discover -s tests -p "test_app.py"`,
+which puts `tests` on `sys.path`. The Web distribution is normally
 installed (CI installs it with `--no-deps`), so `comic_sol_web` imports from
 the installed distribution. The fallback below keeps the documented command
 working in a plain checkout without an editable install.
@@ -17,11 +17,23 @@ import tempfile
 from pathlib import Path
 
 WEB_ROOT = Path(__file__).resolve().parents[1]
-REPOSITORY_ROOT = WEB_ROOT.parent
 REQUIRE_SYMLINK_TESTS = os.environ.get("COMIC_SOL_REQUIRE_SYMLINK_TESTS") == "1"
 
 if importlib.util.find_spec("comic_sol_web") is None:  # pragma: no cover - checkout fallback
     sys.path.insert(0, str(WEB_ROOT))
+
+
+def engine_source(name: str) -> Path:
+    """Return the installed Comic Sol engine module source file for `name`.
+
+    Studio installs the engine as the `comic-sol` wheel, which bundles the
+    engine modules under `comic_sol_product.engine`.
+    """
+    spec = importlib.util.find_spec("comic_sol_product.engine")
+    if spec is None or spec.origin is None:  # pragma: no cover - misconfigured env
+        raise RuntimeError("the comic-sol engine wheel is not installed")
+    return Path(spec.origin).resolve().parent / f"{name}.py"
+
 
 # Test-only values. They are syntactically valid secrets and carry no meaning
 # outside this suite; the Web distribution never invents a development secret.
