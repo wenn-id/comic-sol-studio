@@ -169,11 +169,20 @@ export function updatePlan(projectId, plan, expectedRevision, idempotencyKey) {
   });
 }
 
+// No current project is not an error: 204 means the session has none yet, and
+// 404 or an unreachable API means this Studio build has no project service
+// (for example a static-only deployment). Every other failure still surfaces.
 export async function getCurrentProject() {
-  const response = await fetch(`${PROJECTS_PATH}/current`, {
-    method: "GET", credentials: "same-origin", headers: { Accept: "application/json" },
-  });
-  if (response.status === 204) return null;
+  let response;
+  try {
+    response = await fetch(`${PROJECTS_PATH}/current`, {
+      method: "GET", credentials: "same-origin", headers: { Accept: "application/json" },
+    });
+  } catch (error) {
+    if (error instanceof TypeError) return null;
+    throw error;
+  }
+  if (response.status === 204 || response.status === 404) return null;
   return readEnvelope(response);
 }
 
