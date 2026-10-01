@@ -39,6 +39,7 @@ include = ["comic_sol_web*"]
 [tool.setuptools.package-data]
 comic_sol_web = [
     "static/index.html",
+    "static/favicon.ico",
     "static/app.js",
     "static/api.js",
     "static/activity.js",

@@ -21,6 +21,7 @@ WEB_ROOT = Path(__file__).resolve().parents[1]
 STATIC_ROOT = WEB_ROOT / "comic_sol_web" / "static"
 STATIC_ASSETS = {
     "static/index.html",
+    "static/favicon.ico",
     "static/app.js",
     "static/api.js",
     "static/activity.js",
@@ -120,6 +121,73 @@ class StudioContractTests(unittest.TestCase):
                 for relative in sorted(STATIC_ASSETS)
             }
         self.assertEqual({relative: 200 for relative in sorted(STATIC_ASSETS)}, statuses)
+
+    def test_favicon_is_linked_packaged_and_served_as_an_icon(self) -> None:
+        self.assertRegex(
+            self.index,
+            r'<link[^>]+rel=["\']icon["\'][^>]+href=["\']\./favicon\.ico["\']',
+        )
+        icon = (STATIC_ROOT / "favicon.ico").read_bytes()
+        self.assertEqual(b"\x00\x00\x01\x00", icon[:4], "favicon.ico is not an ICO file")
+
+        from comic_sol_web.app import create_app
+        from comic_sol_web.config import WebConfig
+
+        with TestClient(create_app(WebConfig.from_env(valid_environment()))) as client:
+            served = client.get("/static/favicon.ico")
+        self.assertEqual(200, served.status_code)
+        self.assertEqual(icon, served.content)
+        self.assertRegex(served.headers["content-type"], r"^image/")
+
+    def test_missing_current_project_is_quiet_but_real_failures_surface(self) -> None:
+        node = shutil.which("node")
+        self.assertIsNotNone(node, "Node.js is required for the Studio runtime contract test")
+        assert node is not None
+        api_uri = (STATIC_ROOT / "api.js").as_uri()
+        script = f"""
+import {{ readFileSync }} from "fs";
+
+const source = readFileSync(new URL({json.dumps(api_uri)}), "utf8");
+const moduleUrl = `data:text/javascript;base64,${{Buffer.from(source, "utf8").toString("base64")}}`;
+const {{ getCurrentProject, StudioApiError }} = await import(moduleUrl);
+
+const check = (condition, message) => {{ if (!condition) throw new Error(message); }};
+const respond = (status) => async () => new Response(null, {{ status }});
+
+globalThis.fetch = respond(204);
+check((await getCurrentProject()) === null, "204 must mean no current project");
+
+globalThis.fetch = respond(404);
+check((await getCurrentProject()) === null, "404 must mean no project service");
+
+globalThis.fetch = async () => {{ throw new TypeError("Failed to fetch"); }};
+check((await getCurrentProject()) === null, "an unreachable API must mean no project");
+
+for (const status of [401, 500]) {{
+  globalThis.fetch = respond(status);
+  let thrown = null;
+  try {{ await getCurrentProject(); }} catch (error) {{ thrown = error; }}
+  check(thrown instanceof StudioApiError, `${{status}} must still raise StudioApiError`);
+  check(thrown.status === status, `${{status}} error lost its status`);
+}}
+
+globalThis.fetch = async () => {{ throw new RangeError("not a network failure"); }};
+let unexpected = null;
+try {{ await getCurrentProject(); }} catch (error) {{ unexpected = error; }}
+check(unexpected instanceof RangeError, "non-network fetch errors must not be swallowed");
+"""
+        completed = subprocess.run(
+            [node, "--input-type=module", "--eval", script],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        self.assertEqual(
+            0,
+            completed.returncode,
+            f"Node Studio runtime contract failed:\n{completed.stdout}\n{completed.stderr}",
+        )
 
     def test_document_landmarks_navigation_and_live_status_are_accessible(self) -> None:
         tags = [tag for tag, _attrs in self.parser.elements]
