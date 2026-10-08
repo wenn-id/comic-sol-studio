@@ -50,6 +50,8 @@ comic_sol_web = [
     "static/views/plan.js",
     "static/views/generate.js",
     "static/views/review.js",
+    "static/fonts/ComicNeue-Bold.ttf",
+    "static/fonts/OFL-ComicNeue.txt",
 ]
 
 [tool.ruff]

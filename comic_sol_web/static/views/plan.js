@@ -126,8 +126,8 @@ export function renderPlanView({ store, announce, persistPlan = updatePlan }) {
     summary.append(item);
   }
 
-  const layout = element("div", { className: "card-grid" });
-  const editor = element("section", { className: "card", "aria-labelledby": "editor-heading" });
+  const layout = element("div", { className: "card-grid plan-grid" });
+  const editor = element("section", { className: "card card-feature", "aria-labelledby": "editor-heading" });
   editor.append(element("h3", { id: "editor-heading" }, "Working copy"));
   const form = element("form", { id: "plan-editor" });
   const controls = {};

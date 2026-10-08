@@ -1,17 +1,35 @@
 :root {
   color-scheme: light dark;
-  --ink: #171522;
-  --paper: #fffaf0;
-  --surface: #ffffff;
-  --accent: #6b38d1;
-  --accent-strong: #482099;
-  --muted: #645f72;
-  --line: #d8cfe8;
-  --success: #176b45;
-  --danger: #a32638;
-  --focus: #006bd6;
+  --ink: #12161c;
+  --paper: #f4efe4;
+  --surface: #fffdf8;
+  --surface-sunk: #ebe4d6;
+  --frame: #12161c;
+  --accent: #f2a516;
+  --accent-ink: #12161c;
+  --accent-text: #8a5300;
+  --accent-soft: #fbe6bb;
+  --signal: #00707e;
+  --muted: #4f5662;
+  --line: #cfc5b1;
+  --halftone: rgb(18 22 28 / 16%);
+  --success: #17693f;
+  --danger: #a3242f;
+  --warning: #8a5300;
+  --focus: #0067c7;
 
-  font-family: "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Noto Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+/* Comic Neue is the Comic Sol logo face; it is bundled so headings never
+   depend on fonts installed on the creator's machine. */
+@font-face {
+  font-family: "Comic Sol Display";
+  src: url("./fonts/ComicNeue-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 * { box-sizing: border-box; }
@@ -20,21 +38,24 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--ink);
-  background: linear-gradient(135deg, #f5edff 0%, var(--paper) 55%, #e8f8f0 100%);
+  background: var(--paper);
 }
 
-button, input, textarea, select { font: inherit; }
+button, input, textarea, select { font: inherit; color: inherit; }
 button, input, textarea, select { min-height: 2.75rem; }
 
 .skip-link {
   position: fixed;
-  z-index: 20;
+  z-index: 30;
   top: 0.5rem;
   left: 0.5rem;
+  border: 2px solid var(--frame);
+  border-radius: 6px;
   padding: 0.75rem 1rem;
-  color: white;
-  background: var(--accent-strong);
-  transform: translateY(-160%);
+  color: var(--accent-ink);
+  background: var(--accent);
+  font-weight: 750;
+  transform: translateY(-200%);
 }
 .skip-link:focus { transform: translateY(0); }
 
@@ -43,159 +64,472 @@ button, input, textarea, select { min-height: 2.75rem; }
   outline-offset: 3px;
 }
 
-.site-header, main, footer, .status-region {
-  width: min(72rem, calc(100% - 2rem));
+.site-header, footer, .status-region {
+  width: min(76rem, calc(100% - 2rem));
   margin-inline: auto;
 }
 
+h1, h2, h3 { line-height: 1.1; }
+h2, h3, .step-tab, .button, legend, dialog h3 {
+  font-family: "Comic Sol Display", "Comic Neue", "Noto Sans", ui-sans-serif, sans-serif;
+}
+
+/* Masthead: a comic cover strip. The halftone field is the print motif
+   comics are made from, kept to this one surface. */
 .site-header {
-  display: flex;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: end;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding-block: 2rem 1rem;
-}
-
-h1, h2, h3 { line-height: 1.15; }
-h1 { margin: 0; font-size: clamp(2rem, 6vw, 4rem); }
-.eyebrow { margin: 0 0 0.25rem; color: var(--accent-strong); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-
-.step-tab, .button {
-  border: 2px solid var(--accent);
-  border-radius: 999px;
-  padding: 0.65rem 1.1rem;
-  color: var(--accent-strong);
+  gap: 1.5rem 2.5rem;
+  margin-top: 1.25rem;
+  border: 3px solid var(--frame);
+  border-radius: 10px;
+  padding: clamp(1.25rem, 3vw, 2rem);
   background: var(--surface);
-  font-weight: 750;
+  overflow: hidden;
+  isolation: isolate;
+}
+.site-header::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 0 45%;
+  background-image: radial-gradient(var(--halftone) 1.4px, transparent 1.6px);
+  background-size: 9px 9px;
+  content: "";
+  mask-image: linear-gradient(100deg, transparent 0%, #000 70%);
+}
+
+.brand { display: flex; align-items: center; gap: 1rem; }
+.brand-mark {
+  flex: none;
+  width: clamp(3.25rem, 7vw, 4.5rem);
+  height: auto;
+  color: var(--frame);
+}
+.brand-mark .sun-core { fill: var(--accent); }
+.brand-mark .sun-ray { fill: var(--accent); }
+
+h1 {
+  display: grid;
+  margin: 0;
+  font-family: "Comic Sol Display", "Comic Neue", "Noto Sans", ui-sans-serif, sans-serif;
+  font-weight: 700;
+}
+.brand-name {
+  font-size: clamp(2.25rem, 6.5vw, 4.25rem);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 var(--accent);
+}
+.brand-studio {
+  color: var(--muted);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  letter-spacing: 0.04em;
+}
+
+/* Stepper: four panels in one strip. The rail under each panel fills up to
+   the current step, so position is visible without claiming completion. */
+nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  justify-self: end;
+  width: min(100%, 38rem);
+}
+
+.step-tab {
+  position: relative;
+  border: 2.5px solid var(--frame);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem 0.85rem;
+  color: var(--ink);
+  background: var(--surface);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: left;
   cursor: pointer;
+  transition: transform 120ms ease, background-color 120ms ease;
 }
-.step-tab[aria-current="page"], .button.primary {
-  color: white;
-  background: var(--accent-strong);
+.step-tab::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.4rem;
+  left: 0.75rem;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  content: "";
 }
+.step-tab:has(~ .step-tab[aria-current="page"])::after { background: var(--signal); }
+.step-tab[aria-current="page"] {
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 3px 3px 0 var(--frame);
+  transform: translate(-2px, -2px);
+}
+.step-tab[aria-current="page"]::after { background: var(--frame); }
+.step-tab:not(:disabled):not([aria-current="page"]):hover { background: var(--accent-soft); }
+.step-tab:disabled {
+  opacity: 0.75;
+  border-style: dashed;
+  color: var(--muted);
+  background: transparent;
+  box-shadow: none;
+}
+
 button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+.button {
+  border: 2.5px solid var(--frame);
+  border-radius: 6px;
+  padding: 0.55rem 1.15rem;
+  color: var(--ink);
+  background: var(--surface);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 100ms ease, box-shadow 100ms ease, background-color 100ms ease;
+}
+.button:not(:disabled):hover { background: var(--accent-soft); }
+.button.primary {
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 3px 3px 0 var(--frame);
+}
+.button.primary:not(:disabled):hover {
+  background: var(--accent);
+  box-shadow: 4px 4px 0 var(--frame);
+  transform: translate(-1px, -1px);
+}
+.button:not(:disabled):active {
+  box-shadow: 0 0 0 var(--frame);
+  transform: translate(2px, 2px);
+}
+.button:disabled { border-style: dashed; box-shadow: none; }
 
 main {
   min-height: 32rem;
-  padding-block: 1rem;
+  padding-block: 2rem 1rem;
 }
-.view-heading { max-width: 46rem; margin-bottom: 1.5rem; }
-.view-heading p { color: var(--muted); font-size: 1.05rem; }
+main:focus { outline: none; }
+main:focus-visible { outline: 3px solid var(--focus); outline-offset: 6px; }
 
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: 1rem; }
+/* Each step change slides the new page in, so the move between steps is
+   felt rather than a silent swap. */
+#studio-view > section { animation: panel-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(0.75rem); }
+  to { opacity: 1; transform: none; }
+}
+
+#studio-view > section > * + * { margin-top: 1.25rem; }
+#studio-view > section > .view-heading + * { margin-top: 0; }
+#studio-view > section > h3 { margin-bottom: -0.25rem; font-size: 1.6rem; }
+#studio-view > section > h3 + * { margin-top: 0.75rem; }
+
+.view-heading { max-width: 48rem; margin-bottom: 1.5rem; }
+.view-heading h2 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+}
+.view-heading p { margin: 0.25rem 0 0; color: var(--muted); font-size: 1.05rem; }
+.view-heading .revision-label { color: var(--ink); }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+.start-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.plan-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.queue-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); }
+
+/* Cards are comic panels: solid ink frame, flat. Only the panel holding
+   the step's main action lifts off the page with a hard offset shadow. */
 .card {
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  padding: clamp(1rem, 3vw, 1.75rem);
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  box-shadow: 0 0.75rem 2rem rgb(50 30 80 / 10%);
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  border: 2.5px solid var(--frame);
+  border-radius: 8px;
+  padding: clamp(1rem, 3vw, 1.6rem);
+  background: var(--surface);
 }
-.card h3 { margin-top: 0; }
+.card-feature, .start-create-card { box-shadow: 6px 6px 0 var(--frame); }
+.card h3 { margin: 0; font-size: 1.45rem; }
+.card p { margin: 0; }
+.card ul { margin: 0; padding-left: 1.25rem; }
+.card li + li { margin-top: 0.25rem; }
+.card > .button, .card > a[download] { justify-self: start; }
 
-.field { display: grid; gap: 0.4rem; margin-block: 1rem; }
-.field label, legend { font-weight: 750; }
+form { display: grid; gap: 1.1rem; }
+.field { display: grid; gap: 0.35rem; }
+.compact-fields { display: grid; gap: 0.75rem; }
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1rem;
+}
+.field label, legend, .card > label:not(.confirm-check) { font-weight: 750; }
 .field-help { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
 input, textarea, select {
   width: 100%;
-  border: 1px solid #81758e;
-  border-radius: 0.5rem;
-  padding: 0.7rem;
+  border: 2px solid var(--muted);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
   color: var(--ink);
   background: var(--surface);
 }
-textarea { min-height: 9rem; resize: vertical; }
-fieldset { border: 0; margin: 1rem 0; padding: 0; }
-.choice-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; }
-.choice-row label { display: inline-flex; align-items: center; gap: 0.5rem; }
-.choice-row input { width: auto; min-height: auto; }
-.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
-.compact-fields { display: grid; gap: 0.75rem; }
+input:hover, textarea:hover, select:hover { border-color: var(--frame); }
+input[type="checkbox"], input[type="radio"] {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+}
+input[type="file"] { padding: 0.45rem; }
+input[type="file"]::file-selector-button {
+  margin-right: 0.75rem;
+  border: 2px solid var(--frame);
+  border-radius: 5px;
+  padding: 0.35rem 0.8rem;
+  color: var(--ink);
+  background: var(--accent-soft);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+textarea { min-height: 9rem; resize: vertical; line-height: 1.55; }
 
-.project-summary { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; padding: 0; list-style: none; color: var(--muted); }
+fieldset { border: 0; margin: 0; padding: 0; }
+legend { margin-bottom: 0.5rem; padding: 0; font-size: 1.05rem; }
+.choice-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.choice-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 2px solid var(--muted);
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.choice-row label:has(input:checked) {
+  border-color: var(--frame);
+  background: var(--accent-soft);
+}
+
+.confirm-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  border: 2px dashed var(--muted);
+  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.confirm-check input { margin-top: 0.15rem; }
+.confirm-check:has(input:checked) { border-style: solid; border-color: var(--frame); background: var(--accent-soft); }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.card > .actions { margin-top: 0.25rem; }
+
+.project-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+.project-summary li {
+  border: 2px solid var(--frame);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  color: var(--muted);
+  background: var(--surface);
+}
 .project-summary strong { color: var(--ink); }
-.diff-list { display: grid; gap: 1rem; }
-.diff-item { border-left: 0.3rem solid var(--accent); padding-left: 1rem; }
-.diff-item p { white-space: pre-wrap; overflow-wrap: anywhere; }
-.diff-label { color: var(--muted); font-weight: 750; }
-.notice { border-radius: 0.5rem; padding: 0.8rem 1rem; background: #eee7ff; color: #2c174f; }
-.status-region { min-height: 3rem; padding: 0.75rem 1rem; font-weight: 700; }
-.status-region[data-tone="error"] { color: var(--danger); }
+
+#draft-diff { display: grid; gap: 1rem; }
+#draft-diff > p { margin: 0; }
+.diff-list { display: grid; gap: 1.25rem; }
+.diff-item { display: grid; gap: 0.35rem; }
+.diff-item h3 { font-size: 1.15rem; }
+.diff-item p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.diff-label { color: var(--muted); font-size: 0.85rem; font-weight: 750; text-transform: uppercase; letter-spacing: 0.04em; }
+.diff-label + p {
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  background: var(--surface-sunk);
+}
+.diff-item > p:last-child {
+  border-color: var(--frame);
+  background: var(--accent-soft);
+}
+
+.notice {
+  margin: 0;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  background: var(--surface-sunk);
+}
+.notice.warning { border-color: var(--warning); color: var(--ink); }
+
+/* Status messages read as the narrator's speech balloon, pinned near the
+   bottom of the viewport so an error is seen wherever the creator is. */
+.status-region {
+  position: sticky;
+  z-index: 10;
+  bottom: 1.25rem;
+  width: fit-content;
+  max-width: min(36rem, calc(100% - 2rem));
+  margin: 0.5rem 0 1.25rem max(1rem, calc((100% - 76rem) / 2));
+  border: 2.5px solid var(--frame);
+  border-radius: 1.25rem;
+  padding: 0.7rem 1.1rem;
+  background: var(--surface);
+  box-shadow: 4px 4px 0 var(--frame);
+  font-weight: 700;
+  pointer-events: none;
+}
+.status-region::after {
+  position: absolute;
+  bottom: -0.85rem;
+  left: 1.6rem;
+  width: 1.1rem;
+  height: 0.85rem;
+  background: var(--frame);
+  clip-path: polygon(0 0, 100% 0, 15% 100%);
+  content: "";
+}
+.status-region:empty { opacity: 0; }
+.status-region[data-tone="error"] { color: var(--danger); border-color: var(--danger); }
+.status-region[data-tone="error"]::after { background: var(--danger); }
 .status-region[data-tone="success"] { color: var(--success); }
-footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; color: var(--muted); }
 
-@media (max-width: 42rem) {
-  .site-header { align-items: start; flex-direction: column; }
-  nav, .step-tab { width: 100%; }
+footer {
+  margin-top: 1rem;
+  border-top: 2.5px solid var(--frame);
+  padding-block: 1rem 2rem;
+  color: var(--muted);
 }
+footer p { margin: 0; }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.job-card { gap: 0.5rem; }
+.job-card h3 { font-size: 1.2rem; overflow-wrap: anywhere; }
+.job-card p { color: var(--muted); font-size: 0.95rem; }
+.job-card .actions { margin-top: 0.5rem; }
+.job-card .actions p { font-size: 0.9rem; }
+.job-state {
+  justify-self: start;
+  border: 2px solid var(--frame);
+  border-radius: 6px;
+  padding: 0.15rem 0.6rem;
+  background: var(--surface-sunk);
+  font-weight: 800;
+  text-transform: capitalize;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ink: #f6f1ff;
-    --paper: #17131f;
-    --surface: #241d2e;
-    --accent: #c2a5ff;
-    --accent-strong: #b28cff;
-    --muted: #c7bfd1;
-    --line: #544762;
-    --success: #57d49a;
-    --danger: #ff9eaa;
-    --focus: #62b4ff;
-  }
-  body { background: linear-gradient(135deg, #21162e, var(--paper) 60%, #12261f); }
-  .step-tab[aria-current="page"], .button.primary { color: #16101f; }
-  .notice { color: #f6f1ff; background: #392858; }
+.job-card .job-state { color: var(--ink); }
+.job-card .state-accepted { color: var(--surface); background: var(--success); }
+.job-card .state-failed, .job-card .state-cancelled { color: var(--surface); background: var(--danger); }
+.job-card .state-validating,
+.job-card .state-awaiting_provider_confirmation,
+.job-card .state-paused { background: var(--accent-soft); }
+/* Work still in flight carries moving stripes; they stop the moment the
+   job leaves an active state. */
+.job-card .state-queued, .job-card .state-running, .job-card .state-polling {
+  background: repeating-linear-gradient(
+    -45deg, var(--accent-soft) 0 8px, var(--surface-sunk) 8px 16px
+  ) 0 0 / 22.6px 22.6px;
+  animation: in-flight 900ms linear infinite;
 }
+@keyframes in-flight { to { background-position: 22.6px 0; } }
 
-
-.job-card { display: grid; align-content: start; }
-.job-state { font-weight: 800; text-transform: capitalize; }
-.state-accepted { color: var(--success); }
-.state-failed, .state-cancelled { color: var(--danger); }
-.state-validating, .staged-raster { border-color: var(--accent); }
-.accepted-raster { border: 2px solid var(--success); }
-.warning { border-left: 0.3rem solid #9b6500; }
+.accepted-raster { border-color: var(--success); border-width: 3px; box-shadow: 6px 6px 0 var(--success); }
+.staged-raster { border-style: dashed; }
 .raster-preview {
   display: block;
   width: 100%;
   max-height: 38rem;
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border: 2.5px solid var(--frame);
+  border-radius: 4px;
   object-fit: contain;
-  background: var(--surface);
+  background: var(--surface-sunk);
 }
+.card a[download] {
+  border: 2.5px solid var(--frame);
+  border-radius: 6px;
+  padding: 0.55rem 1.15rem;
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 3px 3px 0 var(--frame);
+  font-weight: 750;
+  text-decoration: none;
+}
+
 dialog {
   width: min(34rem, calc(100% - 2rem));
-  border: 2px solid var(--accent);
-  border-radius: 1rem;
+  border: 3px solid var(--frame);
+  border-radius: 10px;
   padding: 1.5rem;
   color: var(--ink);
   background: var(--surface);
+  box-shadow: 8px 8px 0 var(--accent);
 }
-dialog::backdrop { background: rgb(20 12 32 / 70%); }
+dialog[open] { animation: dialog-pop 180ms cubic-bezier(0.2, 0.9, 0.3, 1.3); }
+@keyframes dialog-pop {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+dialog h3 { margin-top: 0; font-size: 1.6rem; }
+dialog::backdrop { background: rgb(8 10 14 / 72%); }
 .revision-label { font-weight: 750; }
+
+/* Queue: one strip per subject, with that subject's jobs as panels. */
+.queue-grid { grid-template-columns: minmax(0, 1fr); }
+.subject-group {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  border-width: 2px;
+  background: var(--surface-sunk);
+}
+.subject-group h4 {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-family: "Comic Sol Display", "Comic Neue", "Noto Sans", ui-sans-serif, sans-serif;
+  font-size: 1.2rem;
+  text-transform: capitalize;
+}
+.workflow-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.workflow-controls h3 { flex-basis: 100%; }
+.pdf-action:empty { display: none; }
 
 #studio-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 1rem;
+  width: min(76rem, calc(100% - 2rem));
+  margin-inline: auto;
 }
+#studio-shell > main { width: 100%; margin: 0; }
 
+/* The activity log is reference material beside the work, so it stays a
+   flat, quiet panel rather than competing with the step's main panel. */
 #activity-drawer {
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  box-shadow: 0 0.75rem 2rem rgb(50 30 80 / 10%);
+  margin-top: 2rem;
+  border: 2.5px solid var(--frame);
+  border-radius: 8px;
+  background: var(--surface);
   padding: 1rem;
   min-width: 320px;
   max-width: 720px;
@@ -209,7 +543,7 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
   max-width: none;
   resize: none;
   overflow: hidden;
-  padding: 0.5rem 0.75rem;
+  padding: 0.35rem 0.5rem;
 }
 
 #activity-drawer[data-collapsed="true"] .activity-header { margin-bottom: 0; }
@@ -224,16 +558,24 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
 
 .activity-toggle {
   border: 0;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  color: var(--ink);
   background: transparent;
-  font-weight: 750;
+  font-family: "Comic Sol Display", "Comic Neue", "Noto Sans", ui-sans-serif, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  color: var(--accent-strong);
 }
+.activity-toggle:hover { background: var(--accent-soft); }
 
 .activity-resize {
   flex: 1;
   min-width: 8rem;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  accent-color: var(--accent);
   cursor: ew-resize;
 }
 
@@ -245,12 +587,12 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
 }
 
 .activity-card {
-  border-left: 0.3rem solid var(--accent);
-  padding: 0.5rem 0.75rem;
-  background: var(--surface);
-  border-radius: 0.5rem;
   display: grid;
   gap: 0.25rem;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-sunk);
 }
 
 .activity-field {
@@ -260,31 +602,73 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
 }
 
 .activity-label {
+  min-width: 4.5rem;
   color: var(--muted);
   font-weight: 750;
-  min-width: 4.5rem;
   text-transform: lowercase;
 }
 
 .activity-value { word-break: break-word; }
 
+@media (max-width: 56rem) {
+  .site-header { grid-template-columns: 1fr; }
+  nav { justify-self: stretch; width: 100%; }
+  .start-grid, .plan-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 30rem) {
+  nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card-feature, .start-create-card { box-shadow: 4px 4px 0 var(--frame); }
+  .accepted-raster { box-shadow: 4px 4px 0 var(--success); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f3ede1;
+    --paper: #0b0f14;
+    --surface: #131a22;
+    --surface-sunk: #0f151c;
+    --frame: #e8e1d3;
+    --accent: #f2a516;
+    --accent-ink: #12161c;
+    --accent-text: #f6bd52;
+    --accent-soft: #3a2c10;
+    --signal: #3ddcf0;
+    --muted: #a9b2bd;
+    --line: #34404d;
+    --halftone: rgb(61 220 240 / 22%);
+    --success: #4fd69c;
+    --danger: #ff8a95;
+    --warning: #f6bd52;
+    --focus: #5cc8ff;
+  }
+  .job-card .state-accepted, .job-card .state-failed, .job-card .state-cancelled { color: #0b0f14; }
+}
+
 @media (max-width: 63.99rem) {
   body { overflow-y: auto; }
-  #studio-shell {
-    grid-template-columns: minmax(0, 1fr);
-    width: min(72rem, calc(100% - 2rem));
-    margin-inline: auto;
-  }
-  #studio-shell > main { width: 100%; }
+  #studio-shell { grid-template-columns: minmax(0, 1fr); }
   #activity-drawer {
     width: 100% !important;
     min-width: 0;
     max-width: none;
+    margin-top: 0;
     resize: none;
   }
   .compact-fields { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* Desktop: the whole Studio fits one viewport, and only the step content
+   scrolls. The masthead compresses so Start stays fully visible. */
 @media (min-width: 64rem) and (min-height: 42rem) {
   html,
   body { height: 100%; }
@@ -295,36 +679,37 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
     grid-template-rows: auto minmax(0, 1fr) auto auto;
   }
 
+  .site-header, footer { width: min(92rem, calc(100% - 2rem)); }
+
   .site-header {
+    margin-top: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    gap: 1rem 2rem;
     align-items: center;
-    padding-block: 0.65rem 0.45rem;
   }
-  h1 { font-size: clamp(2rem, 4vw, 3rem); }
-  .eyebrow { font-size: 0.8rem; }
+  .brand-mark { width: 2.75rem; }
+  .brand-name { font-size: clamp(2rem, 3.2vw, 2.75rem); }
+  .brand-studio { font-size: 0.95rem; }
   .step-tab {
-    min-height: 2.35rem;
-    padding: 0.5rem 0.9rem;
+    min-height: 2.5rem;
+    padding: 0.4rem 0.7rem 0.65rem;
   }
+  .step-tab::after { bottom: 0.3rem; }
 
   #studio-shell {
     min-height: 0;
     height: 100%;
     width: min(92rem, calc(100% - 2rem));
-    margin-inline: auto;
     align-items: stretch;
-  }
-
-  #studio-shell > main {
-    width: 100%;
-    margin: 0;
   }
 
   main {
     min-height: 0;
     height: 100%;
     overflow: auto;
-    padding-block: 0.4rem;
+    padding: 1rem 0.6rem 1rem 0;
   }
+  #activity-drawer { align-self: start; margin-top: 1rem; }
 
   .start-view {
     display: grid;
@@ -334,10 +719,10 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
     overflow: hidden;
   }
 
-  .start-view .view-heading { margin-bottom: 0.55rem; }
-  .start-view .view-heading h2 { margin-block: 0.15rem; }
+  .start-view .view-heading { margin-bottom: 0.6rem; }
+  .start-view .view-heading h2 { margin-block: 0; font-size: 1.85rem; }
   .start-view .view-heading p {
-    margin: 0.2rem 0;
+    margin: 0;
     font-size: 0.95rem;
   }
 
@@ -346,14 +731,16 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
     height: 100%;
     grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
     align-items: stretch;
+    padding: 0 8px 8px 0;
   }
 
   .start-view .card {
     min-height: 0;
-    padding: 0.75rem 1rem;
+    padding: 0.85rem 1.1rem;
     overflow: auto;
   }
-  .start-view .card h3 { margin-bottom: 0.45rem; }
+  .start-view .card { gap: 0.5rem; }
+  .start-view .card h3 { font-size: 1.25rem; }
 
   .start-create-card {
     display: grid;
@@ -363,36 +750,46 @@ dialog::backdrop { background: rgb(20 12 32 / 70%); }
   .start-create-form {
     display: grid;
     align-content: start;
-    gap: 0.25rem;
+    gap: 0.45rem;
     min-height: 0;
   }
+  .start-create-form .field { gap: 0.15rem; }
+  .start-create-form legend { margin-bottom: 0.25rem; }
+  .start-create-form input:not([type="radio"]):not([type="checkbox"]),
+  .start-create-form select {
+    min-height: 2.4rem;
+    padding-block: 0.35rem;
+  }
+  .start-create-form .choice-row label { padding: 0.25rem 0.75rem; }
 
-  .start-create-form .field,
-  .start-create-form fieldset { margin-block: 0.2rem; }
   .start-create-form .field-help { font-size: 0.78rem; }
   .start-create-form textarea {
     min-height: 5rem;
     height: 5.5rem;
     resize: none;
   }
-  .start-create-form .choice-row { margin-top: 0.2rem; }
-  .start-create-form .actions { margin-top: 0.25rem; }
 
   .compact-fields {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.65rem;
   }
-  .compact-fields .field { margin-block: 0.1rem; }
 
   .status-region {
-    min-height: 2rem;
+    position: static;
+    max-width: min(48rem, calc(100% - 2rem));
+    margin: 0.4rem 0 0.4rem max(1rem, calc((100% - 92rem) / 2));
     padding-block: 0.35rem;
   }
+  .status-region::after { display: none; }
+  .status-region:empty {
+    margin-block: 0;
+    padding-block: 0;
+    border-width: 0;
+    box-shadow: none;
+  }
   footer {
+    margin-top: 0;
     padding-block: 0.35rem 0.6rem;
     font-size: 0.85rem;
   }
-  footer p { margin: 0.2rem 0; }
-
-  #activity-drawer { align-self: start; }
 }

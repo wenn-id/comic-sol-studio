@@ -5,15 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <title>Comic Sol Studio</title>
+    <link rel="preload" href="./fonts/ComicNeue-Bold.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="./styles.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
   <body>
     <a class="skip-link" href="#studio-main">Skip to Studio content</a>
     <header class="site-header">
-      <div>
-        <p class="eyebrow">Comic Sol</p>
-        <h1>Studio</h1>
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <g stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+            <path class="sun-ray" d="M32 2 37 14H27Z"/>
+            <path class="sun-ray" d="M32 62 27 50H37Z"/>
+            <path class="sun-ray" d="M2 32 14 27V37Z"/>
+            <path class="sun-ray" d="M62 32 50 37V27Z"/>
+            <path class="sun-ray" d="M10.8 10.8 22.9 15.7 15.7 22.9Z"/>
+            <path class="sun-ray" d="M53.2 53.2 41.1 48.3 48.3 41.1Z"/>
+            <path class="sun-ray" d="M53.2 10.8 48.3 22.9 41.1 15.7Z"/>
+            <path class="sun-ray" d="M10.8 53.2 15.7 41.1 22.9 48.3Z"/>
+            <circle class="sun-core" cx="32" cy="32" r="14"/>
+          </g>
+        </svg>
+        <h1><span class="brand-name">Comic Sol</span> <span class="brand-studio">Studio · from prompt to comic</span></h1>
       </div>
       <nav aria-label="Studio steps">
         <button id="start-tab" class="step-tab" type="button" data-view="start" aria-current="page">1. Start</button>
