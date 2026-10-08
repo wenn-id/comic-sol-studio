@@ -372,7 +372,7 @@ export function renderReviewView({ store, announce, navigate }) {
     "Confirm overwrite explicitly before creating a private export.",
     { id: "export-guidance", class: "field-help" },
   );
-  const overwriteLabel = element("label", "Confirm overwrite");
+  const overwriteLabel = element("label", "Confirm overwrite", { class: "confirm-check" });
   const overwrite = element("input", null, {
     type: "checkbox", name: "overwrite_confirmation",
   });

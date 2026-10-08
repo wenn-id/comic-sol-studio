@@ -222,7 +222,7 @@ export function renderGenerateView({ store, announce, navigate }) {
   section.append(localStatus);
 
   const form = element("form", null, {
-    class: "card", "aria-describedby": "cost-guidance",
+    class: "card card-feature", "aria-describedby": "cost-guidance",
   });
   const providerLabel = element("label", "Provider", { for: "generation-provider" });
   const provider = element("select", null, {
@@ -250,6 +250,7 @@ export function renderGenerateView({ store, announce, navigate }) {
   const costLabel = element(
     "label",
     "I explicitly confirm generation with the displayed cost status.",
+    { class: "confirm-check" },
   );
   const costConfirmation = element("input", null, {
     id: "cost-confirmation", name: "cost_confirmation", type: "checkbox",
@@ -259,14 +260,21 @@ export function renderGenerateView({ store, announce, navigate }) {
     type: "submit", class: "button primary",
   });
   submit.disabled = true;
+  const routeFields = element("div", null, { class: "field-row" });
+  for (const [label, control] of [[providerLabel, provider], [modelLabel, model], [authLabel, authMode]]) {
+    const wrapper = element("div", null, { class: "field" });
+    wrapper.append(label, control);
+    routeFields.append(wrapper);
+  }
+  const submitActions = element("div", null, { class: "actions" });
+  submitActions.append(submit);
   form.append(
-    providerLabel, provider, modelLabel, model, authLabel, authMode, capabilities,
-    reasonHeading, reasons, cost, costLabel, submit,
+    routeFields, capabilities, reasonHeading, reasons, cost, costLabel, submitActions,
   );
   section.append(form);
 
   const queueHeading = element("h3", "Generation queue");
-  const queue = element("div", null, { class: "card-grid", "aria-live": "polite" });
+  const queue = element("div", null, { class: "card-grid queue-grid", "aria-live": "polite" });
   const workflowControls = element("div", null, { class: "card workflow-controls" });
   workflowControls.append(element("h3", "Workflow controls"));
   const pauseBtn = element("button", "Pause workflow", { type: "button", class: "button" });

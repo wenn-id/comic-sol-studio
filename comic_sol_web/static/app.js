@@ -17,9 +17,21 @@ const tabs = Array.from(document.querySelectorAll(".step-tab"));
 let renderedView = null;
 let browserLocalCreatorProject = null;
 
+// The status balloon floats over content, so routine messages step aside
+// after a moment; errors stay until the next message replaces them.
+const STATUS_CLEAR_MS = 6000;
+let statusTimer = null;
+
 function announce(message, tone = "") {
+  clearTimeout(statusTimer);
   status.textContent = message;
   status.dataset.tone = tone;
+  if (tone !== "error") {
+    statusTimer = setTimeout(() => {
+      status.textContent = "";
+      status.dataset.tone = "";
+    }, STATUS_CLEAR_MS);
+  }
 }
 
 function navigate(view, { focus = true } = {}) {

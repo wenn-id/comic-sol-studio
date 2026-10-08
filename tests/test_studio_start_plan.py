@@ -32,6 +32,8 @@ STATIC_ASSETS = {
     "static/views/plan.js",
     "static/views/generate.js",
     "static/views/review.js",
+    "static/fonts/ComicNeue-Bold.ttf",
+    "static/fonts/OFL-ComicNeue.txt",
 }
 
 
@@ -581,6 +583,26 @@ check(activeStore.getState().project.revision === 9, "active project was overwri
         reduced = self.styles.split("prefers-reduced-motion: reduce", 1)[1]
         self.assertRegex(reduced, r"animation-duration:\s*0\.01ms")
         self.assertRegex(reduced, r"scroll-behavior:\s*auto")
+
+    def test_floating_status_clears_routine_messages_but_keeps_errors(self) -> None:
+        announce = self.app[
+            self.app.index("function announce(") : self.app.index("function navigate(")
+        ]
+        self.assertIn("clearTimeout(statusTimer)", announce)
+        self.assertRegex(announce, r'if \(tone !== "error"\) \{\s*statusTimer = setTimeout\(')
+        self.assertIn('status.textContent = ""', announce)
+        self.assertIn("STATUS_CLEAR_MS", announce)
+        # An empty live region must stay in the accessibility tree so the next
+        # message is still announced: fade it, never remove it from layout.
+        empty_rule = re.search(r"\.status-region:empty\s*\{([^}]*)\}", self.styles)
+        self.assertIsNotNone(empty_rule)
+        assert empty_rule is not None
+        self.assertNotRegex(empty_rule.group(1), r"display:\s*none|visibility:\s*hidden")
+
+    def test_display_font_is_bundled_with_its_license(self) -> None:
+        self.assertIn('url("./fonts/ComicNeue-Bold.ttf")', self.styles)
+        self.assertTrue((STATIC_ROOT / "fonts" / "OFL-ComicNeue.txt").is_file())
+        self.assertNotRegex(self.styles, r"url\(\s*[\"']?https?://")
 
     def test_dark_success_and_danger_text_meet_wcag_aa_contrast(self) -> None:
         dark = self.styles.split("@media (prefers-color-scheme: dark)", 1)[1]
