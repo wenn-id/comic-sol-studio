@@ -1,5 +1,5 @@
 # Canonical input for requirements/locks/web-<platform>-x86_64.txt.
-# Regenerate with pip-tools==7.6.1 on the target platform (see requirements/README.md):
+# Regenerate with pip-tools==7.6.2 on the target platform (see requirements/README.md):
 # python -m piptools compile --allow-unsafe --generate-hashes --output-file=requirements/locks/web-linux-x86_64.txt --strip-extras requirements/web.in
 # python -m piptools compile --allow-unsafe --generate-hashes --output-file=requirements/locks/web-macos-x86_64.txt --strip-extras requirements/web.in
 # python -m piptools compile --allow-unsafe --generate-hashes --output-file=requirements/locks/web-windows-x86_64.txt --strip-extras requirements/web.in
@@ -12,16 +12,16 @@
 # SDKs, databases, frontend build systems, telemetry, or hosted service
 # clients are added here. pip is pinned explicitly so the interpreter that
 # later performs --require-hashes installs is itself hash-verified.
-fastapi==0.141.1
-uvicorn==0.35.0
+fastapi==0.162.0
+uvicorn==0.54.0
 httpx==0.28.1
-authlib==1.7.2
-cryptography==50.0.1
+authlib==1.9.1
+cryptography==50.0.2
 python-multipart==0.0.32
-starlette==1.6.0
-build==1.5.0
-coverage==7.15.4
-mypy==2.3.1
-pip==26.2.1
-pip-tools==7.6.1
-ruff==0.16.3
+starlette==1.10.0
+build==1.6.1
+coverage==7.17.0
+mypy==2.4.0
+pip==26.2.2
+pip-tools==7.6.2
+ruff==0.17.2
